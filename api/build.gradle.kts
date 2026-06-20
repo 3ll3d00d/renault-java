@@ -3,28 +3,23 @@ plugins {
     `maven-publish`
 }
 
-group = "com.renault"
+group = "com.3ll3d00d.renault-java"
 version = "0.1.0"
 
 java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(25)
-    }
-}
-
-repositories {
-    mavenCentral()
+    withJavadocJar()
+    withSourcesJar()
 }
 
 dependencies {
     api("com.squareup.okhttp3:okhttp:4.12.0")
-    api("com.fasterxml.jackson.core:jackson-databind:2.17.2")
-    implementation("org.slf4j:slf4j-api:2.0.16")
+    api("com.fasterxml.jackson.core:jackson-databind:2.19.0")
+    implementation("org.apache.logging.log4j:log4j-api:2.26.0")
 
-    testImplementation(platform("org.junit:junit-bom:5.11.4"))
+    testImplementation(platform("org.junit:junit-bom:5.12.2"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
-    testRuntimeOnly("ch.qos.logback:logback-classic:1.5.15")
+    testRuntimeOnly("org.apache.logging.log4j:log4j-core:2.26.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 

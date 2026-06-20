@@ -6,14 +6,14 @@ import com.renault.api.exception.KamereonException;
 import com.renault.api.exception.RenaultException;
 import com.renault.api.kamereon.model.*;
 import okhttp3.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.io.IOException;
 import java.util.Map;
 
 public class KamereonClient {
-    private static final Logger log = LoggerFactory.getLogger(KamereonClient.class);
+    private static final Logger log = LogManager.getLogger(KamereonClient.class);
     private static final MediaType JSON = MediaType.get("application/vnd.api+json");
 
     private final OkHttpClient http;

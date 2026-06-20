@@ -1,7 +1,7 @@
 package com.renault.api.kamereon;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -14,7 +14,7 @@ import java.util.Set;
  * A null value in a per-model map means that endpoint is unsupported for that model.
  */
 public final class VehicleEndpoints {
-    private static final Logger log = LoggerFactory.getLogger(VehicleEndpoints.class);
+    private static final Logger log = LogManager.getLogger(VehicleEndpoints.class);
 
     static final EndpointDefinition DEFAULT_CHARGE_SET_MODE     = kca("/kca/car-adapter/v1/cars/{vin}/actions/charge-mode");
     static final EndpointDefinition DEFAULT_CHARGE_SET_SCHEDULE = kca("/kca/car-adapter/v2/cars/{vin}/actions/charge-schedule");

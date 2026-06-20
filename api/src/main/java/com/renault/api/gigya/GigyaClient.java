@@ -10,13 +10,13 @@ import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.io.IOException;
 
 public class GigyaClient {
-    private static final Logger log = LoggerFactory.getLogger(GigyaClient.class);
+    private static final Logger log = LogManager.getLogger(GigyaClient.class);
 
     private final OkHttpClient http;
     private final ObjectMapper mapper;
