@@ -1,0 +1,29 @@
+upstream_repo=https://github.com/hacf-fr/renault-api
+baseline_commit=b0d1faf65b62d5ec96e6097cf149e48e737e2d5a
+baseline_date=2026-06-19T11:37:06Z
+latest_release=v0.5.12
+latest_release_commit=1f4ed96014799bdfbc2714cd470c8d6cd5946e3e
+latest_release_date=2026-06-08T14:32:35Z
+
+# This file records the exact state of the upstream Python library that was used
+# to port this Java implementation.
+#
+# baseline_commit is the upstream HEAD at the time of porting. The only change
+# between latest_release_commit and baseline_commit is a pytest dev-dependency
+# bump (no API changes), so the two are functionally identical for porting purposes.
+#
+# To check what has changed in the upstream library since this port was made:
+#
+#   git clone https://github.com/hacf-fr/renault-api /tmp/renault-api
+#   cd /tmp/renault-api
+#   git diff b0d1faf65b62d5ec96e6097cf149e48e737e2d5a HEAD -- src/renault_api/
+#
+# To restrict to the Kamereon and Gigya API surface only:
+#
+#   git diff b0d1faf65b62d5ec96e6097cf149e48e737e2d5a HEAD -- \
+#     src/renault_api/gigya/ \
+#     src/renault_api/kamereon/ \
+#     src/renault_api/const.py
+#
+# Update this file (baseline_commit, baseline_date) whenever this Java port is
+# brought in sync with a newer upstream revision.
