@@ -1,6 +1,6 @@
 package com.renault.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.renault.api.exception.GigyaException;
 import com.renault.api.exception.NotAuthenticatedException;
 import com.renault.api.gigya.GigyaClient;
@@ -16,10 +16,8 @@ import okhttp3.OkHttpClient;
 import java.time.Instant;
 import java.util.Map;
 
-/**
- * Manages authentication state and delegates to Gigya + Kamereon clients.
- * JWT tokens are cached until expiry. Login tokens survive across sessions.
- */
+/// Manages authentication state and delegates to Gigya + Kamereon clients.
+/// JWT tokens are cached until expiry. Login tokens survive across sessions.
 public class RenaultSession {
     private static final int JWT_EXPIRY_SECONDS = 900;
     private static final int JWT_REFRESH_MARGIN_SECONDS = 60;
@@ -43,7 +41,7 @@ public class RenaultSession {
         this.kamereon = new KamereonClient(http, mapper);
     }
 
-    /** Create a session with explicit credentials (skip locale lookup). */
+    /// Create a session with explicit credentials (skip locale lookup).
     public RenaultSession(OkHttpClient http, ObjectMapper mapper, LocaleConfig.Credentials credentials, String locale) {
         this.credentials = credentials;
         this.locale = locale;
@@ -53,20 +51,18 @@ public class RenaultSession {
 
     // ---- Auth ----
 
-    /** Authenticate with username/password. Stores the login token for subsequent calls. */
+    /// Authenticate with username/password. Stores the login token for subsequent calls.
     public void login(String loginId, String password) {
         clearAuthState();
         var response = gigya.login(credentials.gigyaUrl(), credentials.gigyaApiKey(), loginId, password);
         this.loginToken = response.getSessionCookie();
     }
 
-    /**
-     * Returns the current login token. Store this securely instead of the password.
-     * Restore it with {@link #setLoginToken} on the next session.
-     */
+    /// Returns the current login token. Store this securely instead of the password.
+    /// Restore it with {@link #setLoginToken} on the next session.
     public String getLoginToken() { return loginToken; }
 
-    /** Restores a login token from a previous session, avoiding re-authentication. */
+    /// Restores a login token from a previous session, avoiding re-authentication.
     public void setLoginToken(String token) {
         clearAuthState();
         this.loginToken = token;

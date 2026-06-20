@@ -12,13 +12,13 @@ java {
 }
 
 dependencies {
-    api("com.squareup.okhttp3:okhttp:4.12.0")
-    api("com.fasterxml.jackson.core:jackson-databind:2.19.0")
+    api("com.squareup.okhttp3:okhttp:5.4.0")
+    api("tools.jackson.core:jackson-databind:3.2.0")
     implementation("org.apache.logging.log4j:log4j-api:2.26.0")
 
-    testImplementation(platform("org.junit:junit-bom:5.12.2"))
+    testImplementation(platform("org.junit:junit-bom:6.1.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
-    testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
+    testImplementation("com.squareup.okhttp3:mockwebserver:5.4.0")
     testRuntimeOnly("org.apache.logging.log4j:log4j-core:2.26.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }

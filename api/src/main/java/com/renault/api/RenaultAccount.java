@@ -4,7 +4,11 @@ import com.renault.api.kamereon.model.KamereonVehiclesLink;
 
 import java.util.List;
 
-/** Proxy to a Renault account. */
+/// Proxy to a Renault account. A single Gigya login can have multiple accounts
+/// (e.g. personal and professional). Each account holds one or more vehicles.
+///
+/// Instances are obtained via {@link RenaultClient#getAccounts()} or
+/// {@link RenaultClient#getAccount(String)}.
 public class RenaultAccount {
     private final String accountId;
     private final RenaultSession session;
@@ -16,7 +20,7 @@ public class RenaultAccount {
 
     public String getAccountId() { return accountId; }
 
-    /** Returns all vehicles linked to this account. */
+    /// Returns all vehicles linked to this account.
     public List<RenaultVehicle> getVehicles() {
         var response = session.getAccountVehicles(accountId);
         List<KamereonVehiclesLink> links = response.getVehicleLinks();
@@ -26,7 +30,7 @@ public class RenaultAccount {
             .toList();
     }
 
-    /** Returns the vehicle with the given VIN. */
+    /// Returns the vehicle with the given VIN.
     public RenaultVehicle getVehicle(String vin) {
         return new RenaultVehicle(accountId, vin, session, null);
     }

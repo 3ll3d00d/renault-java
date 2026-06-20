@@ -2,8 +2,8 @@ package com.renault.api.kamereon.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 import com.renault.api.exception.RenaultException;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -19,6 +19,12 @@ public class KamereonVehicleDataResponse extends KamereonResponse {
         return data != null ? data.attributes() : MAPPER.nullNode();
     }
 
+    /// Deserializes the response attributes into a typed model.
+    ///
+    /// @param <T>  target type
+    /// @param type model class, e.g. `BatteryStatusData.class`
+    /// @return deserialized attributes; if the response has no attributes, returns an empty instance
+    /// @throws RenaultException if deserialization fails
     public <T> T getAttributes(Class<T> type) {
         JsonNode attrs = getRawAttributes();
         if (attrs == null || attrs.isNull()) {

@@ -17,19 +17,28 @@ This port must behave **identically** to the Python library unless the user expl
 - Do not add features, remove behaviours, or change semantics relative to the Python library without explicit instruction to diverge.
 - If you are unsure whether a change drifts from Python behaviour, consult the Python source before proceeding.
 
+## Project structure
+
+This is a multi-project Gradle build with two subprojects:
+
+| Subproject | Purpose |
+|---|---|
+| `api/` | The library — published artifact, all production and test code |
+| `harness/` | Integration test harness for verifying against a real vehicle |
+
 ## How to build and test
 
 Use the Gradle wrapper — **never** invoke Gradle any other way:
 
 ```
-./gradlew test          # compile and run all tests
-./gradlew compileJava   # compile production code only
-./gradlew build         # compile, test, and assemble
+./gradlew :api:test          # compile and run all tests
+./gradlew :api:compileJava   # compile production code only
+./gradlew build              # compile, test, and assemble all subprojects
 ```
 
-Gradle version: **9.6.0**. Java version: **25 EA**. Both are handled automatically by the wrapper.
+Gradle version: **9.6.0**. Java version: **25**. Both are handled automatically by the wrapper.
 
-Run `./gradlew test` before and after every change. All tests must pass. If any test fails, do not proceed until it is fixed.
+Run `./gradlew :api:test` before and after every change. All tests must pass. If any test fails, do not proceed until it is fixed.
 
 ## Test suite overview
 
@@ -48,9 +57,32 @@ The tests mirror the Python test suite case-for-case. They fall into these group
 | `KamereonClientTest` | Kamereon HTTP flow (MockWebServer) |
 | `KamereonVehicleSpecsTest` | Per-model specs verified against `expected_specs.json` |
 
-Test fixtures live in `src/test/resources/fixtures/` and are taken directly from the Python repo's `tests/fixtures/` directory.
+Test fixtures live in `api/src/test/resources/fixtures/` and are taken directly from the Python repo's `tests/fixtures/` directory.
 
 `expected_specs.json` is the ground truth for per-vehicle behaviour. Do not edit it without also updating `upstream-baseline.txt`.
+
+## Harness subproject
+
+`harness/` is an integration test tool for verifying the library against a real vehicle. It is **never** run in CI — it requires live credentials and a real car. It has two modes:
+
+**CLI** (interactive menu, prints raw HTTP exchange + structural fixture diff):
+```
+export RENAULT_USER=you@example.com RENAULT_PASS=xxx RENAULT_LOCALE=fr_FR
+./gradlew :harness:run
+```
+
+**Browser UI** (side-by-side live JSON vs fixture JSON with diff table):
+```
+./gradlew :harness:run -PmainClass=com.renault.harness.HarnessServer
+# open http://localhost:8080
+```
+
+Optional env vars:
+- `RENAULT_FIXTURE_PATH` — path to `vehicle_data` fixture directory (default: `api/src/test/resources/fixtures/kamereon/vehicle_data`)
+
+To add Renault 5-specific fixtures: run the harness against the car, copy the live JSON output into a new fixture file under `api/src/test/resources/fixtures/kamereon/vehicle_data/`, then write a `@Test` in `KamereonVehicleDataTest` referencing it.
+
+The harness only calls **read** endpoints by default. It does not send commands to the car.
 
 ## Commit every turn
 
@@ -62,12 +94,17 @@ Commit message format: one concise summary line, then a blank line, then bullet 
 Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
 ```
 
-If `./gradlew test` has not been run and passed in the current turn, run it before committing.
+If `./gradlew :api:test` has not been run and passed in the current turn, run it before committing.
+
+## Javadoc style
+
+Always write Javadoc using Markdown syntax (enabled by default in Java 23+). Use `///` line comments with standard Markdown — backticks for inline code, fenced blocks for multi-line examples, `**bold**`, bullet lists — rather than the legacy `/** */` block comments with `{@code ...}`, `<pre>`, `<ul>/<li>` HTML tags. `{@link}` inline tags are still valid inside `///` comments.
 
 ## Package and structure
 
 - Package root: `com.renault.api`
-- Main source: `src/main/java/com/renault/api/`
-- Test source: `src/test/java/com/renault/api/`
-- Fixtures: `src/test/resources/fixtures/`
+- Library source: `api/src/main/java/com/renault/api/`
+- Library tests: `api/src/test/java/com/renault/api/`
+- Test fixtures: `api/src/test/resources/fixtures/`
+- Harness source: `harness/src/main/java/com/renault/harness/`
 - Python baseline reference: `upstream-baseline.txt`

@@ -1,5 +1,9 @@
 package com.renault.api.exception;
 
+/// Error from the Gigya authentication layer. {@link #getErrorCode()} returns a Gigya
+/// numeric error code (e.g. `403005` = token expired, `403013` = unauthorized).
+/// When no structured code is available (e.g. a network or parse failure), `errorCode`
+/// is `-1`.
 public class GigyaException extends RenaultException {
     private final int errorCode;
     private final String errorDetails;

@@ -7,6 +7,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/// A weekly charging schedule program. Each program has an ID, an activated flag, and an
+/// optional {@link ChargeDaySchedule} per day of the week. Pass a list of these to
+/// {@link com.renault.api.RenaultVehicle#setChargeSchedules}.
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class ChargeSchedule {

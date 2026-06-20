@@ -33,20 +33,26 @@ public class KamereonVehicleDetails extends KamereonResponse {
     public String getBrandLabel() { return brand != null ? brand.label() : null; }
     public String getEnergyCode() { return energy != null ? energy.code() : null; }
 
+    /// Returns `true` if this vehicle has an electric motor (BEV or PHEV).
     public boolean usesElectricity() {
         String et = engineEnergyType != null ? engineEnergyType : getEnergyCode();
         return "ELEC".equals(et) || "ELECX".equals(et) || "PHEV".equals(et);
     }
 
+    /// Returns `true` if this vehicle has a combustion engine (ICE, HEV, or PHEV).
     public boolean usesFuel() {
         String et = engineEnergyType != null ? engineEnergyType : getEnergyCode();
         return "OTHER".equals(et) || "PHEV".equals(et) || "HEV".equals(et);
     }
 
+    /// Returns `true` if charge session durations in history responses are in minutes.
+    /// When `false`, durations are in seconds.
     public boolean reportsChargeSessionDurationsInMinutes() {
         return VehicleEndpoints.getSpecification(getModelCode(), "reports-charge-session-durations-in-minutes");
     }
 
+    /// Returns `true` if {@link BatteryStatusData#chargingInstantaneousPower()} is in Watts.
+    /// When `false`, it is in kilowatts.
     public boolean reportsChargingPowerInWatts() {
         return VehicleEndpoints.getSpecification(getModelCode(), "reports-in-watts");
     }

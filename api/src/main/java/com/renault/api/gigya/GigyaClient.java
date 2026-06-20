@@ -1,6 +1,6 @@
 package com.renault.api.gigya;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.renault.api.exception.GigyaException;
 import com.renault.api.gigya.model.GigyaBaseResponse;
 import com.renault.api.gigya.model.GigyaAccountInfoResponse;
@@ -65,12 +65,8 @@ public class GigyaClient {
         } catch (IOException e) {
             throw new GigyaException("Gigya request failed: " + e.getMessage(), e);
         }
-        try {
-            T parsed = mapper.readValue(responseText, type);
-            parsed.raiseForErrorCode();
-            return parsed;
-        } catch (IOException e) {
-            throw new GigyaException("Gigya responded with invalid JSON: " + e.getMessage(), e);
-        }
+        T parsed = mapper.readValue(responseText, type);
+        parsed.raiseForErrorCode();
+        return parsed;
     }
 }

@@ -1,6 +1,6 @@
 package com.renault.api.kamereon;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import tools.jackson.databind.JsonNode;
 import com.renault.api.TestFixtures;
 import com.renault.api.kamereon.model.KamereonVehicleDetails;
 import com.renault.api.kamereon.model.KamereonVehicleDetailsResponse;
@@ -32,7 +32,7 @@ class KamereonVehicleSpecsTest {
             throw new RuntimeException("Failed to load expected_specs.json", e);
         }
         var builder = Stream.<VehicleFixture>builder();
-        specs.fields().forEachRemaining(entry ->
+        specs.properties().forEach(entry ->
             builder.accept(new VehicleFixture(entry.getKey(), entry.getValue())));
         return builder.build();
     }

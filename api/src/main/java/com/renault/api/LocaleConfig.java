@@ -3,10 +3,17 @@ package com.renault.api;
 import java.util.Map;
 import java.util.Optional;
 
-/**
- * Known locale → API credential mappings.
- * All EU locales share the same Gigya/Kamereon keys.
- */
+/// Maps locale strings to Gigya and Kamereon API credentials. Pass a locale to
+/// {@link RenaultClient#RenaultClient(String)} to select the right regional endpoints.
+///
+/// Supported locales (BCP 47 format with underscore separator):
+/// `bg_BG`, `cs_CZ`, `da_DK`, `de_AT`, `de_CH`, `de_DE`,
+/// `en_GB`, `en_IE`, `es_ES`, `es_MX`, `fi_FI`, `fr_BE`,
+/// `fr_CH`, `fr_FR`, `fr_LU`, `hr_HR`, `hu_HU`, `it_CH`,
+/// `it_IT`, `nl_BE`, `nl_NL`, `no_NO`, `pl_PL`, `pt_PT`,
+/// `ro_RO`, `ru_RU`, `sk_SK`, `sl_SI`, `sv_SE`.
+///
+/// All EU locales share the same Gigya and Kamereon endpoints; `es_MX` uses US endpoints.
 public final class LocaleConfig {
     public static final String GIGYA_URL_EU      = "https://accounts.eu1.gigya.com";
     public static final String GIGYA_URL_US      = "https://accounts.us1.gigya.com";
@@ -55,10 +62,14 @@ public final class LocaleConfig {
         locale("sv_SE", GIGYA_URL_EU, GIGYA_API_KEY_EU, KAMEREON_URL_EU)
     );
 
+    /// Returns credentials for the given locale, or empty if the locale is not supported.
     public static Optional<Credentials> forLocale(String locale) {
         return Optional.ofNullable(LOCALES.get(locale));
     }
 
+    /// Returns credentials for the given locale.
+    ///
+    /// @throws IllegalArgumentException if the locale is not supported
     public static Credentials requireForLocale(String locale) {
         return forLocale(locale).orElseThrow(() ->
             new IllegalArgumentException("Unsupported locale: %s. Supported: %s".formatted(locale, LOCALES.keySet())));

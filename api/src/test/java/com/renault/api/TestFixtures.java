@@ -2,8 +2,9 @@ package com.renault.api;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -22,9 +23,10 @@ public final class TestFixtures {
     public static final String TEST_PASSWORD = "test_password";
     public static final String TEST_VIN = "VF1AAAAA555777999";
 
-    public static final ObjectMapper MAPPER = new ObjectMapper()
+    public static final ObjectMapper MAPPER = JsonMapper.builder()
         .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-        .setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        .changeDefaultVisibility(v -> v.withVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY))
+        .build();
 
     private TestFixtures() {}
 

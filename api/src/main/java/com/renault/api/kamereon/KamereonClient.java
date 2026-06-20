@@ -1,7 +1,7 @@
 package com.renault.api.kamereon;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 import com.renault.api.exception.KamereonException;
 import com.renault.api.exception.RenaultException;
 import com.renault.api.kamereon.model.*;
@@ -91,12 +91,7 @@ public class KamereonClient {
     }
 
     private <T extends KamereonResponse> T post(String url, String apiKey, String jwt, Map<String, ?> params, Object body, Class<T> type) {
-        String json;
-        try {
-            json = mapper.writeValueAsString(body);
-        } catch (IOException e) {
-            throw new RenaultException("Failed to serialize request body: " + e.getMessage(), e);
-        }
+        String json = mapper.writeValueAsString(body);
         log.debug("POST {} body: {}", url, json);
         Request request = buildRequest(url, apiKey, jwt, params)
             .post(RequestBody.create(json, JSON))
@@ -137,12 +132,7 @@ public class KamereonClient {
             throw new KamereonException("INVALID_JSON", "Kamereon returned non-JSON: " + responseText);
         }
 
-        T parsed;
-        try {
-            parsed = mapper.readValue(responseText, type);
-        } catch (IOException e) {
-            throw new RenaultException("Failed to parse Kamereon response: " + e.getMessage(), e);
-        }
+        T parsed = mapper.readValue(responseText, type);
 
         parsed.raiseForErrorCode();
 
