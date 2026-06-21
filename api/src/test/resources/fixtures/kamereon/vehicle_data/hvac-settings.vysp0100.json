@@ -1,0 +1,16 @@
+{
+  "type": "TECHNICAL",
+  "messages": [
+    {
+      "code": "err.tech.vcps.ev.hvac-settings.error",
+      "message": "{\"errors\":[{\"errorCode\":\"502000\",\"errorMessage\":\"something went wrong\",\"errorLevel\":\"error\",\"errorType\":\"technical\"}],\"error_reference\":\"00000000-0000-0000-0000-000000000000\"}"
+    }
+  ],
+  "errors": [
+    {
+      "errorCode": "err.tech.vcps.ev.hvac-settings.error",
+      "errorMessage": "{\"errors\":[{\"errorCode\":\"502000\",\"errorMessage\":\"something went wrong\",\"errorLevel\":\"error\",\"errorType\":\"technical\"}],\"error_reference\":\"00000000-0000-0000-0000-000000000000\"}"
+    }
+  ],
+  "error_reference": "TECHNICAL"
+}

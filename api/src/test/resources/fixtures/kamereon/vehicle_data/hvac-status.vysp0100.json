@@ -1,0 +1,11 @@
+{
+  "data": {
+    "id": "VYSP0100012345678",
+    "attributes": {
+      "internalTemperature": 0.0,
+      "hvacStatus": "off",
+      "socThreshold": 15.0,
+      "lastUpdateTime": "2026-06-21T12:34:27Z"
+    }
+  }
+}

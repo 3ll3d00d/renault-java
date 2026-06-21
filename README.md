@@ -88,7 +88,26 @@ export RENAULT_LOCALE=fr_FR
 
 The structural diff highlights fields that are missing, extra, or have a different type compared to the nearest fixture file — useful for validating that a new vehicle model's responses match the expected schema.
 
-To add a new vehicle model's fixture: copy the live JSON printed by the harness into a file under `api/src/test/resources/fixtures/kamereon/vehicle_data/` and add a `@Test` in `KamereonVehicleDataTest`.
+## Capturing fixtures
+
+`scripts/capture_fixtures.py` authenticates with the Renault API, calls every supported read endpoint, and writes the raw responses as JSON files into `api/src/test/resources/fixtures/kamereon/vehicle_data/`. Files are named `<endpoint>.<vin8>.json` (e.g. `battery-status.vf1aaaaa.json`).
+
+```bash
+uv run --with renault-api --with aiohttp scripts/capture_fixtures.py
+```
+
+Environment variables:
+
+| Variable | Required | Default | Description |
+|---|---|---|---|
+| `RENAULT_USER` | yes | | Account email |
+| `RENAULT_PASS` | yes | | Account password |
+| `RENAULT_LOCALE` | no | `fr_FR` | BCP 47 locale |
+| `RENAULT_FIXTURE_PATH` | no | `api/src/test/resources/fixtures/kamereon/vehicle_data` | Output directory |
+
+Once files are written, add `@Test` methods in `KamereonVehicleDataTest` referencing them and run `./gradlew :api:test`.
+
+The script uses `aiohttp.TraceConfig.on_request_end` to capture response bytes before the renault-api library's models consume them, so the fixture files contain the raw API JSON rather than a re-serialised form.
 
 ## What is Kamereon?
 

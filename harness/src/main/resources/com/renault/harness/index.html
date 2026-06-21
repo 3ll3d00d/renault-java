@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Renault API Harness</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; background: #f5f5f5; color: #222; }
+  header { background: #1a1a2e; color: #fff; padding: 12px 20px; display: flex; align-items: center; gap: 16px; }
+  header h1 { font-size: 1.1rem; font-weight: 600; }
+  header span { font-size: 0.85rem; opacity: 0.7; }
+  #vin-badge { font-family: monospace; background: #e63946; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; }
+  #sidebar { width: 220px; background: #fff; border-right: 1px solid #ddd; padding: 12px 0; overflow-y: auto; position: fixed; top: 48px; bottom: 0; }
+  .ep-btn { display: block; width: 100%; text-align: left; padding: 9px 16px; border: none; background: none;
+            cursor: pointer; font-size: 0.875rem; border-left: 3px solid transparent; }
+  .ep-btn:hover { background: #f0f4ff; }
+  .ep-btn.active { border-left-color: #e63946; background: #f0f4ff; font-weight: 600; }
+  #main { margin-left: 220px; padding: 16px 20px; }
+  #http-log { font-family: monospace; font-size: 0.8rem; background: #222; color: #90ee90;
+              padding: 8px 12px; border-radius: 4px; margin-bottom: 12px; min-height: 24px; }
+  #panels { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .panel h3 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: .05em; color: #666;
+              margin-bottom: 6px; }
+  .panel pre { background: #fff; border: 1px solid #ddd; border-radius: 4px; overflow: auto;
+               max-height: 55vh; font-size: 0.78rem; padding: 10px; }
+  #diff-section { margin-top: 16px; }
+  #diff-section h3 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: .05em;
+                     color: #666; margin-bottom: 8px; }
+  #diff-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  #diff-table th { text-align: left; padding: 5px 10px; background: #f0f0f0; border-bottom: 2px solid #ddd; }
+  #diff-table td { padding: 4px 10px; border-bottom: 1px solid #eee; font-family: monospace; }
+  .ok { color: #2d6a4f; }
+  .missing { color: #c0392b; background: #ffeaea; }
+  .extra { color: #b7590a; background: #fff3e0; }
+  .mismatch { color: #7b2d8b; background: #f3e8ff; }
+  #placeholder { color: #888; padding: 40px 0; text-align: center; }
+  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid #ccc;
+             border-top-color: #e63946; border-radius: 50%; animation: spin .7s linear infinite; vertical-align: middle; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #error-box { color: #c0392b; background: #ffeaea; border: 1px solid #f5b8b8;
+               border-radius: 4px; padding: 10px 14px; margin-bottom: 12px; display: none; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Renault API Harness</h1>
+  <span id="vin-badge">loading…</span>
+</header>
+<nav id="sidebar"></nav>
+<main id="main">
+  <div id="http-log"></div>
+  <div id="error-box"></div>
+  <div id="placeholder">← Select an endpoint</div>
+  <div id="panels" style="display:none">
+    <div class="panel">
+      <h3>Live response</h3>
+      <pre><code id="live-code" class="language-json"></code></pre>
+    </div>
+    <div class="panel">
+      <h3>Fixture: <span id="fixture-name"></span></h3>
+      <pre><code id="fixture-code" class="language-json"></code></pre>
+    </div>
+  </div>
+  <div id="diff-section" style="display:none">
+    <h3>Structural diff (field presence &amp; types)</h3>
+    <table id="diff-table">
+      <thead><tr><th>Path</th><th>Live type</th><th>Fixture type</th><th>Status</th></tr></thead>
+      <tbody id="diff-body"></tbody>
+    </table>
+  </div>
+</main>
+
+<script>
+async function init() {
+  const res = await fetch('/api/endpoints');
+  const data = await res.json();
+  document.getElementById('vin-badge').textContent = data.vin;
+  const sidebar = document.getElementById('sidebar');
+  data.endpoints.forEach(ep => {
+    const btn = document.createElement('button');
+    btn.className = 'ep-btn';
+    btn.textContent = ep;
+    btn.onclick = () => runEndpoint(ep, btn);
+    sidebar.appendChild(btn);
+  });
+}
+
+async function runEndpoint(ep, btn) {
+  document.querySelectorAll('.ep-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  const httpLog = document.getElementById('http-log');
+  const errorBox = document.getElementById('error-box');
+  httpLog.innerHTML = '<span class="spinner"></span> Running ' + ep + ' …';
+  errorBox.style.display = 'none';
+  document.getElementById('placeholder').style.display = 'none';
+  document.getElementById('panels').style.display = 'none';
+  document.getElementById('diff-section').style.display = 'none';
+
+  const res = await fetch('/api/run/' + ep);
+  const data = await res.json();
+
+  httpLog.textContent = data.http || '';
+
+  if (data.error) {
+    errorBox.textContent = 'Error: ' + data.error;
+    errorBox.style.display = 'block';
+    return;
+  }
+
+  document.getElementById('live-code').textContent = data.liveJson;
+  document.getElementById('fixture-name').textContent = data.fixtureName || '(none)';
+  document.getElementById('fixture-code').textContent = data.fixtureJson || '(no fixture)';
+  document.querySelectorAll('pre code').forEach(el => hljs.highlightElement(el));
+  document.getElementById('panels').style.display = 'grid';
+
+  const tbody = document.getElementById('diff-body');
+  tbody.innerHTML = '';
+  (data.diff || []).forEach(row => {
+    const tr = document.createElement('tr');
+    const cls = {OK:'ok', MISSING_IN_LIVE:'missing', EXTRA_IN_LIVE:'extra', TYPE_MISMATCH:'mismatch'}[row.status] || '';
+    tr.className = cls;
+    tr.innerHTML = `<td>${row.path}</td><td>${row.live}</td><td>${row.fixture}</td><td>${row.status}</td>`;
+    tbody.appendChild(tr);
+  });
+  if (data.diff && data.diff.length > 0) document.getElementById('diff-section').style.display = 'block';
+}
+
+init();
+</script>
+</body>
+</html>

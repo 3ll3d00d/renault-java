@@ -38,7 +38,9 @@ Use the Gradle wrapper — **never** invoke Gradle any other way:
 
 Gradle version: **9.6.0**. Java version: **25**. Both are handled automatically by the wrapper.
 
-Run `./gradlew :api:test` before and after every change. All tests must pass. If any test fails, do not proceed until it is fixed.
+Run `./gradlew test` before and after every change. This compiles **all** subprojects (including `harness/`) and runs all tests. All tasks must succeed. If any compilation error or test failure occurs, do not proceed until it is fixed.
+
+Do not use `./gradlew :api:test` alone — it skips harness compilation and will miss build breaks there.
 
 ## Test suite overview
 
@@ -94,7 +96,7 @@ Commit message format: one concise summary line, then a blank line, then bullet 
 Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
 ```
 
-If `./gradlew :api:test` has not been run and passed in the current turn, run it before committing.
+If `./gradlew test` has not been run and passed in the current turn, run it before committing. This must succeed in full — no compilation errors in any subproject, no test failures.
 
 ## Javadoc style
 

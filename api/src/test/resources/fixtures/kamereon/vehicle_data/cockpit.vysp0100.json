@@ -1,0 +1,10 @@
+{
+  "data": {
+    "id": "VYSP0100012345678",
+    "attributes": {
+      "fuelQuantity": 0.0,
+      "totalMileage": 3841,
+      "timestamp": "2026-06-21T12:52:28Z"
+    }
+  }
+}

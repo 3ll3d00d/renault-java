@@ -24,13 +24,15 @@ import json
 import os
 import re
 import sys
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 try:
     import aiohttp
+    from renault_api.exceptions import EndpointNotAvailableError
     from renault_api.renault_client import RenaultClient
 except ImportError:
-    sys.exit("Missing dependencies — run:  pip install renault-api aiohttp")
+    sys.exit("Missing dependencies — run:  uv run --with renault-api --with aiohttp")
 
 
 # Maps the URL path fragment returned by the Kamereon API to the fixture
@@ -55,28 +57,66 @@ ENDPOINT_MAP: dict[str, str] = {
     "hvac-sessions":          "hvac-sessions",
 }
 
+# Date range used for history/session endpoints: last 30 days.
+_NOW   = datetime.now(tz=timezone.utc)
+_START = _NOW - timedelta(days=30)
+
 # High-level RenaultVehicle calls to trigger each endpoint.
 # Each entry is (label, async-callable(vehicle)).
 # Failures are caught and reported without aborting the rest.
 VEHICLE_CALLS = [
-    ("battery-status",     lambda v: v.get_battery_status()),
-    ("battery-soc",        lambda v: v.get_battery_soc()),
-    ("cockpit",            lambda v: v.get_cockpit()),
-    ("hvac-status",        lambda v: v.get_hvac_status()),
-    ("hvac-settings",      lambda v: v.get_hvac_settings()),
-    ("charge-mode",        lambda v: v.get_charge_mode()),
-    ("charging-settings",  lambda v: v.get_charging_settings()),
-    ("location",           lambda v: v.get_location()),
-    ("lock-status",        lambda v: v.get_lock_status()),
-    ("res-state",          lambda v: v.get_res_state()),
-    ("pressure",           lambda v: v.get_tyre_pressure()),
-    ("alerts",             lambda v: v.get_alerts()),
+    ("battery-status",        lambda v: v.get_battery_status()),
+    ("battery-soc",           lambda v: v.get_battery_soc()),
+    ("cockpit",               lambda v: v.get_cockpit()),
+    ("hvac-status",           lambda v: v.get_hvac_status()),
+    ("hvac-settings",         lambda v: v.get_hvac_settings()),
+    ("charge-mode",           lambda v: v.get_charge_mode()),
+    ("charging-settings",     lambda v: v.get_charging_settings()),
+    ("location",              lambda v: v.get_location()),
+    ("lock-status",           lambda v: v.get_lock_status()),
+    ("res-state",             lambda v: v.get_res_state()),
+    ("pressure",              lambda v: v.get_tyre_pressure()),
     ("notification-settings", lambda v: v.get_notification_settings()),
-    ("charge-history",     lambda v: v.get_charge_history()),
-    ("charges",            lambda v: v.get_charges()),
-    ("hvac-history",       lambda v: v.get_hvac_history()),
-    ("hvac-sessions",      lambda v: v.get_hvac_sessions()),
+    ("charge-history",        lambda v: v.get_charge_history(_START, _NOW, "month")),
+    ("charges",               lambda v: v.get_charges(_START, _NOW)),
+    ("hvac-history",          lambda v: v.get_hvac_history(_START, _NOW, "month")),
+    ("hvac-sessions",         lambda v: v.get_hvac_sessions(_START, _NOW)),
 ]
+
+
+def _pick(prompt: str, items: list, label_fn) -> object:
+    """Print a numbered list and return the chosen item; auto-selects when only one."""
+    for i, item in enumerate(items):
+        print(f"  [{i}] {label_fn(item)}")
+    if len(items) == 1:
+        print("      → auto-selected")
+        return items[0]
+    while True:
+        raw = input(f"{prompt} [0-{len(items) - 1}]: ").strip()
+        if raw.isdigit() and 0 <= int(raw) < len(items):
+            return items[int(raw)]
+        print(f"  Please enter a number between 0 and {len(items) - 1}.")
+
+
+def _account_label(account) -> str:
+    account_type = getattr(account, "account_type", None) or ""
+    return f"{account.account_id}  {account_type}".rstrip()
+
+
+def _vehicle_label(vehicle) -> str:
+    vin = vehicle.vin
+    details = vehicle._vehicle_details
+    if details is None:
+        return vin
+    extras = []
+    reg = getattr(details, "registrationNumber", None)
+    if reg:
+        extras.append(reg)
+    brand_group = getattr(details, "brand", None)
+    brand_label = getattr(brand_group, "label", None) if brand_group else None
+    if brand_label:
+        extras.append(brand_label)
+    return vin + (f"  ({', '.join(extras)})" if extras else "")
 
 
 async def main() -> None:
@@ -131,12 +171,16 @@ async def main() -> None:
         accounts = await client.get_api_accounts()
         if not accounts:
             sys.exit("No accounts found")
-        vehicles = await accounts[0].get_api_vehicles()
+        print(f"\nFound {len(accounts)} account(s):")
+        account = _pick("Select account", accounts, _account_label)
+
+        vehicles = await account.get_api_vehicles()
         if not vehicles:
-            sys.exit("No vehicles found")
-        vehicle = vehicles[0]
-        vin     = vehicle.details.vin
-        print(f"Vehicle: {vin}\n")
+            sys.exit("No vehicles found in this account")
+        print(f"\nFound {len(vehicles)} vehicle(s):")
+        vehicle = _pick("Select vehicle", vehicles, _vehicle_label)
+        vin = vehicle.vin
+        print(f"\nCapturing data for {vin}\n")
 
         for label, call in VEHICLE_CALLS:
             before = len(captured)
@@ -144,6 +188,8 @@ async def main() -> None:
                 await call(vehicle)
                 ok = len(captured) > before
                 print(f"  {'✓' if ok else '? (not captured)'} {label}")
+            except EndpointNotAvailableError:
+                print(f"  - {label}: not supported by this model")
             except Exception as exc:
                 print(f"  ✗ {label}: {exc}")
 

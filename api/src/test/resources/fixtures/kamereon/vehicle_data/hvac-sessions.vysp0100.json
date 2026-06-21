@@ -1,0 +1,16 @@
+{
+  "type": "FUNCTIONAL",
+  "messages": [
+    {
+      "code": "err.func.wired.not-found",
+      "message": "The specified url does not exist"
+    }
+  ],
+  "errors": [
+    {
+      "errorCode": "err.func.wired.not-found",
+      "errorMessage": "The specified url does not exist"
+    }
+  ],
+  "error_reference": "FUNCTIONAL"
+}

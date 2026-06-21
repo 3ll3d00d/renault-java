@@ -1,6 +1,7 @@
 package com.renault.api.kamereon;
 
 import com.renault.api.TestFixtures;
+import com.renault.api.exception.KamereonException;
 import com.renault.api.kamereon.model.*;
 import org.junit.jupiter.api.Test;
 
@@ -192,6 +193,96 @@ class KamereonVehicleDataTest {
         assertEquals("on", data.hvacStatus());
         assertEquals(40.0, data.socThreshold());
         assertNull(data.externalTemperature());
+    }
+
+    // ---- Renault 5 (R5E1VE) live fixtures ----
+
+    @Test
+    void testBatteryStatusR5() {
+        var response = load("battery-status.vysp0100.json");
+        assertDoesNotThrow(response::raiseForErrorCode);
+        assertNotNull(response.getData());
+        assertTrue(response.getData().id().startsWith("VYSP"));
+
+        var data = response.getAttributes(BatteryStatusData.class);
+        assertEquals("2026-06-21T12:53:46Z", data.timestamp());
+        assertEquals(80, data.batteryLevel());
+        assertEquals(261, data.batteryAutonomy());
+        assertEquals(0, data.plugStatus());
+        assertEquals(0.0, data.chargingStatus());
+        assertEquals(3, data.chargingRemainingTime());
+        assertEquals(0, data.v2lSystemStatusDisplay());
+        assertNull(data.batteryTemperature());
+        assertNull(data.batteryCapacity());
+        assertNull(data.batteryAvailableEnergy());
+        assertNull(data.chargingInstantaneousPower());
+    }
+
+    @Test
+    void testCockpitR5() {
+        var response = load("cockpit.vysp0100.json");
+        assertDoesNotThrow(response::raiseForErrorCode);
+
+        var data = response.getAttributes(CockpitData.class);
+        assertEquals(3841.0, data.totalMileage());
+        assertEquals(0.0, data.fuelQuantity());
+        assertNull(data.fuelAutonomy());
+    }
+
+    @Test
+    void testHvacStatusR5() {
+        var response = load("hvac-status.vysp0100.json");
+        assertDoesNotThrow(response::raiseForErrorCode);
+
+        var data = response.getAttributes(HvacStatusData.class);
+        assertEquals("off", data.hvacStatus());
+        assertEquals(15.0, data.socThreshold());
+        assertEquals(0.0, data.internalTemperature());
+        assertEquals("2026-06-21T12:34:27Z", data.lastUpdateTime());
+        assertNull(data.externalTemperature());
+    }
+
+    @Test
+    void testHvacSettingsR5Error() {
+        var response = load("hvac-settings.vysp0100.json");
+        assertThrows(KamereonException.class, response::raiseForErrorCode);
+    }
+
+    @Test
+    void testLocationR5() {
+        var response = load("location.vysp0100.json");
+        assertDoesNotThrow(response::raiseForErrorCode);
+
+        var data = response.getAttributes(LocationData.class);
+        assertEquals(48.1234567, data.gpsLatitude(), 1e-10);
+        assertEquals(2.3456789, data.gpsLongitude(), 1e-10);
+        assertEquals("2026-06-21T12:52:28Z", data.lastUpdateTime());
+    }
+
+    @Test
+    void testChargesR5() {
+        var response = load("charges.vysp0100.json");
+        assertDoesNotThrow(response::raiseForErrorCode);
+        assertNotNull(response.getData());
+        assertEquals("VYSP0100012345678", response.getData().id());
+    }
+
+    @Test
+    void testChargeHistoryR5Error() {
+        var response = load("charge-history.vysp0100.json");
+        assertThrows(KamereonException.class, response::raiseForErrorCode);
+    }
+
+    @Test
+    void testHvacHistoryR5Error() {
+        var response = load("hvac-history.vysp0100.json");
+        assertThrows(KamereonException.class, response::raiseForErrorCode);
+    }
+
+    @Test
+    void testHvacSessionsR5Error() {
+        var response = load("hvac-sessions.vysp0100.json");
+        assertThrows(KamereonException.class, response::raiseForErrorCode);
     }
 
     @Test

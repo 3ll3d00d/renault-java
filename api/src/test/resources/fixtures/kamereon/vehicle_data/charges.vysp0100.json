@@ -1,0 +1,154 @@
+{
+  "data": {
+    "type": "Car",
+    "id": "VYSP0100012345678",
+    "attributes": {
+      "charges": [
+        {
+          "chargeStartDate": "2026-06-07T02:30:41Z",
+          "chargeEndDate": "2026-06-07T03:22:56Z",
+          "chargeEndStatus": "ok",
+          "chargeStartBatteryLevel": 40,
+          "chargeEndBatteryLevel": 53,
+          "chargeEnergyRecovered": 6.5,
+          "chargeDuration": 52
+        },
+        {
+          "chargeStartDate": "2026-06-06T14:41:26Z",
+          "chargeEndDate": "2026-06-06T15:04:39Z",
+          "chargeEndStatus": "ok",
+          "chargeStartBatteryLevel": 28,
+          "chargeEndBatteryLevel": 34,
+          "chargeEnergyRecovered": 2.75,
+          "chargeDuration": 23
+        },
+        {
+          "chargeStartDate": "2026-06-07T04:30:36Z",
+          "chargeEndDate": "2026-06-07T05:50:55Z",
+          "chargeEndStatus": "ok",
+          "chargeStartBatteryLevel": 66,
+          "chargeEndBatteryLevel": 85,
+          "chargeEnergyRecovered": 9.599998,
+          "chargeDuration": 80
+        },
+        {
+          "chargeStartDate": "2026-06-18T04:30:47Z",
+          "chargeEndDate": "2026-06-18T05:18:35Z",
+          "chargeEndStatus": "ok",
+          "chargeStartBatteryLevel": 85,
+          "chargeEndBatteryLevel": 96,
+          "chargeEnergyRecovered": 5.549999,
+          "chargeDuration": 47
+        },
+        {
+          "chargeStartDate": "2026-06-07T06:00:41Z",
+          "chargeEndDate": "2026-06-07T06:47:00Z",
+          "chargeEndStatus": "ok",
+          "chargeStartBatteryLevel": 85,
+          "chargeEndBatteryLevel": 96,
+          "chargeEnergyRecovered": 5.299999,
+          "chargeDuration": 46
+        },
+        {
+          "chargeStartDate": "2026-05-28T19:46:25Z",
+          "chargeEndDate": "2026-05-28T19:48:14Z",
+          "chargeEndStatus": "ok",
+          "chargeStartBatteryLevel": 96,
+          "chargeEndBatteryLevel": 96,
+          "chargeEnergyRecovered": 0.14999771,
+          "chargeDuration": 1
+        },
+        {
+          "chargeStartDate": "2026-05-27T01:31:11Z",
+          "chargeEndDate": "2026-05-27T05:20:25Z",
+          "chargeEndStatus": "ok",
+          "chargeStartBatteryLevel": 46,
+          "chargeEndBatteryLevel": 96,
+          "chargeEnergyRecovered": 25.800001,
+          "chargeDuration": 229
+        },
+        {
+          "chargeStartDate": "2026-05-26T23:00:13Z",
+          "chargeEndDate": "2026-05-27T00:01:18Z",
+          "chargeEndStatus": "ok",
+          "chargeStartBatteryLevel": 44,
+          "chargeEndBatteryLevel": 44,
+          "chargeEnergyRecovered": 6.949999,
+          "chargeDuration": 61
+        },
+        {
+          "chargeStartDate": "2026-06-07T03:32:38Z",
+          "chargeEndDate": "2026-06-07T04:25:27Z",
+          "chargeEndStatus": "ok",
+          "chargeStartBatteryLevel": 53,
+          "chargeEndBatteryLevel": 66,
+          "chargeEnergyRecovered": 6.5,
+          "chargeDuration": 52
+        },
+        {
+          "chargeStartDate": "2026-06-18T00:01:46Z",
+          "chargeEndDate": "2026-06-18T04:07:36Z",
+          "chargeEndStatus": "ok",
+          "chargeStartBatteryLevel": 27,
+          "chargeEndBatteryLevel": 85,
+          "chargeEnergyRecovered": 29.7,
+          "chargeDuration": 245
+        },
+        {
+          "chargeStartDate": "2026-05-28T19:51:52Z",
+          "chargeEndDate": "2026-05-28T19:52:43Z",
+          "chargeEndStatus": "ok",
+          "chargeStartBatteryLevel": 96,
+          "chargeEndBatteryLevel": 96,
+          "chargeEnergyRecovered": 0.10000229,
+          "chargeDuration": 0
+        },
+        {
+          "chargeStartDate": "2026-05-26T17:00:33Z",
+          "chargeEndDate": "2026-05-26T17:01:51Z",
+          "chargeEndStatus": "ok",
+          "chargeStartBatteryLevel": 30,
+          "chargeEndBatteryLevel": 31,
+          "chargeEnergyRecovered": 0.10000038,
+          "chargeDuration": 1
+        },
+        {
+          "chargeStartDate": "2026-06-17T23:01:18Z",
+          "chargeEndDate": "2026-06-17T23:02:16Z",
+          "chargeEndStatus": "ok",
+          "chargeStartBatteryLevel": 0,
+          "chargeEndBatteryLevel": 27,
+          "chargeEnergyRecovered": 0.20000076,
+          "chargeDuration": 0
+        },
+        {
+          "chargeStartDate": "2026-06-06T23:00:06Z",
+          "chargeEndDate": "2026-06-06T23:01:03Z",
+          "chargeEndStatus": "ok",
+          "chargeStartBatteryLevel": 34,
+          "chargeEndBatteryLevel": 34,
+          "chargeEnergyRecovered": 0.10000038,
+          "chargeDuration": 0
+        },
+        {
+          "chargeStartDate": "2026-06-17T18:34:22Z",
+          "chargeEndDate": "2026-06-17T18:37:05Z",
+          "chargeEndStatus": "ok",
+          "chargeStartBatteryLevel": 27,
+          "chargeEndBatteryLevel": 28,
+          "chargeEnergyRecovered": 0.3000002,
+          "chargeDuration": 2
+        },
+        {
+          "chargeStartDate": "2026-06-07T01:30:41Z",
+          "chargeEndDate": "2026-06-07T01:55:06Z",
+          "chargeEndStatus": "ok",
+          "chargeStartBatteryLevel": 34,
+          "chargeEndBatteryLevel": 40,
+          "chargeEnergyRecovered": 2.7999992,
+          "chargeDuration": 24
+        }
+      ]
+    }
+  }
+}

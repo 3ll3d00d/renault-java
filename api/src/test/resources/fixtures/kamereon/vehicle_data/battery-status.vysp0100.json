@@ -1,0 +1,15 @@
+{
+  "data": {
+    "id": "VYSP0100012345678",
+    "attributes": {
+      "timestamp": "2026-06-21T12:53:46Z",
+      "batteryLevel": 80,
+      "batteryAutonomy": 261,
+      "V2L_SystemStatusDisplay": 0,
+      "plugStatus": 0,
+      "chargingStatus": 0.0,
+      "chargingRemainingTime": 3,
+      "chargingRemainingTimeLastUpdateDateTime": "2026-06-18T05:18:35Z"
+    }
+  }
+}
